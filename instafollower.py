@@ -2,6 +2,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.common.exceptions import ElementClickInterceptedException
 import time
 
 
@@ -72,6 +73,10 @@ class InstaFollower:
         self.scroll_container_to_bottom(container)
         followers = self.driver.find_elements(By.CSS_SELECTOR, 'div[role="dialog"] div._aano button._aj1-')
         for follow in followers:
-            time.sleep(5) # Play around with this to get pass the rate limit
-            follow.click()
+            try:
+                follow.click()
+                time.sleep(5)  # Play around with this to get pass the rate limit
+            except ElementClickInterceptedException:
+                cancel_button = self.driver.find_element_by_xpath('/html/body/div[5]/div/div/div/div[3]/button[2]')
+                cancel_button.click()
 
